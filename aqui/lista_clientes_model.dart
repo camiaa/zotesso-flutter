@@ -1,0 +1,3 @@
+class ListaClientesModel {
+  void dispose() {}
+}

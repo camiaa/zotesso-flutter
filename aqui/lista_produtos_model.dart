@@ -1,0 +1,3 @@
+class ListaProdutosModel {
+  void dispose() {}
+}

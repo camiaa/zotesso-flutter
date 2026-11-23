@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Padaria Hora Pães - App FlutterFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3C1E02;
+      --primary-light: #61462D;
+      --accent: #836638;
+      --bg-cream: #FAF2EB;
+      --card-bg: #FFFFFF;
+      --divider: #D6BBA3;
+      --text-dark: #3C1E02;
+      --text-muted: #61462D;
+      --success: #2e7d32;
+      --danger: #b00020;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #2b1704;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    /* Simulador de Smartphone */
+    .phone-container {
+      width: 100%;
+      max-width: 412px;
+      height: 860px;
+      background-color: var(--bg-cream);
+      border-radius: 36px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 10px #1a0d01;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Barra Superior de Status */
+    .status-bar {
+      height: 28px;
+      background-color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px;
+      color: rgba(255,255,255,0.8);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* AppBar */
+    .app-bar {
+      height: 56px;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 10;
+    }
+
+    .app-bar h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      flex: 1;
+    }
+
+    .app-bar .btn-icon {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    .app-bar .btn-icon:hover {
+      background-color: rgba(255,255,255,0.15);
+    }
+
+    /* Área de Conteúdo / Telas */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: none;
+    }
+
+    .screen-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Estilos da Tela Inicial */
+    .hero-banner {
+      width: 100%;
+      height: 190px;
+      background: linear-gradient(135deg, #4d2605 0%, #200f01 100%);
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 16px rgba(60,30,2,0.25);
+    }
+
+    .hero-banner i {
+      font-size: 54px;
+      color: #e5b98b;
+      margin-bottom: 8px;
+    }
+
+    .hero-banner h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 26px;
+      letter-spacing: 1px;
+    }
+
+    .hero-banner p {
+      font-size: 13px;
+      color: #FAF2EB;
+      opacity: 0.9;
+    }
+
+    .menu-button {
+      width: 100%;
+      height: 44px;
+      background-color: var(--primary);
+      color: var(--bg-cream);
+      border: none;
+      border-radius: 24px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .menu-button:hover {
+      background-color: #271301;
+      transform: translateY(-1px);
+    }
+
+    .menu-button.highlight {
+      background-color: var(--accent);
+      color: white;
+      box-shadow: 0 4px 10px rgba(131,102,56,0.35);
+    }
+
+    .menu-button.highlight:hover {
+      background-color: #6d542d;
+    }
+
+    .divider {
+      height: 2px;
+      background-color: var(--divider);
+      margin: 14px 0;
+      border-radius: 2px;
+    }
+
+    .section-tag {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    /* Cards de Listagem */
+    .card-item {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--divider);
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: transform 0.2s;
+    }
+
+    .card-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .card-price {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--primary);
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-top: 2px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .card-info-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .card-info-row i {
+      color: var(--accent);
+      width: 16px;
+    }
+
+    /* Botão Flutuante (FAB) */
+    .fab-btn {
+      position: absolute;
+      bottom: 24px;
+      right: 20px;
+      background-color: var(--primary);
+      color: var(--bg-cream);
+      border: none;
+      padding: 12px 20px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      box-shadow: 0 6px 16px rgba(60,30,2,0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 20;
+    }
+
+    .fab-btn:hover {
+      background-color: #241201;
+      transform: scale(1.04);
+    }
+
+    /* Formulários de Cadastro */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      background-color: white;
+      border: 1.5px solid var(--divider);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* SnackBar Toast Notification */
+    .snackbar {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background-color: var(--primary);
+      color: var(--bg-cream);
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transform: translateY(120%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 100;
+    }
+
+    .snackbar.show {
+      transform: translateY(0);
+    }
+
+    .snackbar.error {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    /* Equipe e Diagramas */
+    .member-card {
+      background: white;
+      border: 1px solid var(--divider);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .member-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: var(--bg-cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 12px auto;
+      border: 3px solid var(--accent);
+    }
+
+    .member-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .member-role {
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 50px;
+      color: var(--divider);
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-container">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>09:42</span>
+      <span><i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-signal"></i> <i class="fa-solid fa-battery-full"></i></span>
+    </div>
+
+    <!-- AppBar Superior -->
+    <div class="app-bar">
+      <button id="btn-back" class="btn-icon" style="visibility: hidden;" onclick="navTo('home')">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <h1 id="app-title">PADARIA HORA PÃES</h1>
+      <button class="btn-icon" onclick="navTo('home')">
+        <i class="fa-solid fa-house"></i>
+      </button>
+    </div>
+
+    <!-- TELA 1: HOME / INICIAL (paginainicial2.dart) -->
+    <div id="screen-home" class="screen-content active">
+      <div class="hero-banner">
+        <i class="fa-solid fa-bread-slice"></i>
+        <h2>Padaria Hora Pães</h2>
+        <p>Sabor artesanal, qualidade e aconchego</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Telas Originais do 1º Trimestre -->
+      <button class="menu-button" onclick="navTo('vitrine')">INÍCIO (VITRINE)</button>
+      <button class="menu-button" onclick="navTo('equipe')">EQUIPE</button>
+      <button class="menu-button" onclick="navTo('objetivos')">OBJETIVOS</button>
+      <button class="menu-button" onclick="navTo('diagramas')">DIAGRAMAS</button>
+
+      <div class="divider"></div>
+      <div class="section-tag">Requisitos do 3º Trimestre (Firestore)</div>
+
+      <!-- Novas Telas do 3º Trimestre -->
+      <button class="menu-button highlight" onclick="navTo('produtos')">
+        <i class="fa-solid fa-utensils" style="margin-right: 8px;"></i> PRODUTOS (CARDÁPIO)
+      </button>
+      <button class="menu-button highlight" onclick="navTo('clientes')">
+        <i class="fa-solid fa-users" style="margin-right: 8px;"></i> CLIENTES CADASTRADOS
+      </button>
+    </div>
+
+    <!-- TELA 2: VITRINE (homepage.dart) -->
+    <div id="screen-vitrine" class="screen-content">
+      <h3 style="font-family:'Oswald'; color:var(--primary); font-size:20px; margin-bottom:8px;">Quem é Hora Pães?</h3>
+      <p style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:16px;">
+        A Hora Pães nasceu com o propósito de levar sabor, qualidade e aconchego para o seu dia a dia. Trabalhamos com uma grande variedade de pães fresquinhos, bolos caseiros, salgados e cafés especiais.
+      </p>
+
+      <div style="background:white; padding:12px; border-radius:12px; border:1px solid var(--divider); text-align:center; margin-bottom:16px;">
+        <span style="font-size:13px; font-weight:600; color:var(--primary);">Avaliação dos Clientes:</span>
+        <div style="color:#d4a017; font-size:18px; margin-top:4px;">
+          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          <span style="font-size:12px; color:var(--primary); font-weight:700;"> 5.0</span>
+        </div>
+      </div>
+
+      <h4 style="font-family:'Oswald'; color:var(--primary); font-size:16px; margin-bottom:10px;">Destaques do Dia:</h4>
+      <div class="card-item">
+        <div class="card-header">
+          <span class="card-title">Capuccino Especial</span>
+          <span class="card-price">R$ 8,00</span>
+        </div>
+        <span class="badge">Cafés</span>
+        <p class="card-desc">Café espresso com leite vaporizado, canela e chocolate belga.</p>
+      </div>
+
+      <div class="card-item">
+        <div class="card-header">
+          <span class="card-title">Bolo Caseiro de Cenoura</span>
+          <span class="card-price">R$ 20,00</span>
+        </div>
+        <span class="badge">Bolos</span>
+        <p class="card-desc">Com generosa cobertura cremosa de chocolate ao leite.</p>
+      </div>
+
+      <div class="card-item">
+        <div class="card-header">
+          <span class="card-title">Pão Francês Tradicional</span>
+          <span class="card-price">R$ 1,00</span>
+        </div>
+        <span class="badge">Pães</span>
+        <p class="card-desc">Casquinha crocante e miolo super macio, saindo quente a toda hora.</p>
+      </div>
+    </div>
+
+    <!-- TELA 3: EQUIPE (equipe.dart) -->
+    <div id="screen-equipe" class="screen-content">
+      <p style="text-align:center; font-size:13px; color:var(--primary); margin-bottom:16px;">
+        Trabalho apresentado da <strong>Padaria Hora Pães</strong> desenvolvido pelas seguintes alunas com divisão igualitária de tarefas:
+      </p>
+
+      <div class="member-card">
+        <div class="member-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="member-name">Thaviny Rizzato de Souza</div>
+        <div class="member-role">Desenvolvedora Mobile / FlutterFlow</div>
+      </div>
+
+      <div class="member-card">
+        <div class="member-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="member-name">Camila Maria Scriptore Lopes</div>
+        <div class="member-role">Desenvolvedora Mobile / FlutterFlow</div>
+      </div>
+    </div>
+
+    <!-- TELA 4: OBJETIVOS (objetivos.dart) -->
+    <div id="screen-objetivos" class="screen-content">
+      <div style="background:linear-gradient(135deg, #89735F 0%, #3C1E02 100%); color:white; padding:18px; border-radius:16px; margin-bottom:16px;">
+        <i class="fa-solid fa-bullseye" style="font-size:32px; color:#e5b98b; margin-bottom:8px;"></i>
+        <h3 style="font-family:'Oswald'; font-size:20px;">Objetivo do Projeto</h3>
+        <p style="font-size:13px; opacity:0.95; margin-top:6px; line-height:1.4;">
+          Desenvolver um aplicativo moderno no FlutterFlow conectado ao banco de dados Cloud Firestore, aplicando conceitos de Backend Query, persistência de dados em coleções e experiência de usuário para a Padaria Hora Pães.
+        </p>
+      </div>
+    </div>
+
+    <!-- TELA 5: DIAGRAMAS (diagramas.dart) -->
+    <div id="screen-diagramas" class="screen-content">
+      <div style="background:white; border:1px solid var(--divider); border-radius:16px; padding:16px; text-align:center;">
+        <h3 style="font-family:'Oswald'; color:var(--primary); font-size:18px; margin-bottom:8px;">Diagrama de Classes</h3>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Entidades implementadas nas coleções do Firestore:</p>
+        <div style="background:var(--bg-cream); border:1.5px dashed var(--accent); border-radius:12px; padding:12px; text-align:left; font-size:12px; font-family:monospace; color:var(--primary); margin-bottom:10px;">
+          <strong>class Produto {</strong><br>
+          &nbsp;&nbsp;+ nome: String<br>
+          &nbsp;&nbsp;+ preco: Double<br>
+          &nbsp;&nbsp;+ categoria: String<br>
+          &nbsp;&nbsp;+ descricao: String<br>
+          &nbsp;&nbsp;+ data_criacao: Timestamp<br>
+          <strong>}</strong>
+        </div>
+        <div style="background:var(--bg-cream); border:1.5px dashed var(--accent); border-radius:12px; padding:12px; text-align:left; font-size:12px; font-family:monospace; color:var(--primary);">
+          <strong>class Cliente {</strong><br>
+          &nbsp;&nbsp;+ nome: String<br>
+          &nbsp;&nbsp;+ telefone: String<br>
+          &nbsp;&nbsp;+ email: String<br>
+          &nbsp;&nbsp;+ endereco: String<br>
+          &nbsp;&nbsp;+ data_cadastro: Timestamp<br>
+          <strong>}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 6: LISTA DE PRODUTOS (lista_produtos.dart) -->
+    <div id="screen-produtos" class="screen-content">
+      <div id="produtos-list-container">
+        <!-- Itens inseridos dinamicamente -->
+      </div>
+      <button class="fab-btn" onclick="navTo('cadastro-produto')">
+        <i class="fa-solid fa-plus"></i> NOVO PRODUTO
+      </button>
+    </div>
+
+    <!-- TELA 5: CADASTRO DE PRODUTO (cadastro_produto.dart) -->
+    <div id="screen-cadastro-produto" class="screen-content">
+      <h3 style="font-family:'Oswald'; color:var(--primary); font-size:18px; text-align:center; margin-bottom:4px;">NOVO PRODUTO</h3>
+      <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:18px;">Preencha os dados do cardápio</p>
+
+      <div class="form-group">
+        <label class="form-label">Nome do Produto *</label>
+        <input type="text" id="prod-nome" class="form-input" placeholder="Ex: Pão de Queijo">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Preço (R$) *</label>
+        <input type="number" step="0.50" id="prod-preco" class="form-input" placeholder="Ex: 6.50">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Categoria *</label>
+        <input type="text" id="prod-categoria" class="form-input" placeholder="Ex: Pães, Bolos, Bebidas">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Descrição</label>
+        <textarea id="prod-descricao" class="form-input" placeholder="Ex: Artesanal, quentinho e crocante"></textarea>
+      </div>
+
+      <button class="menu-button highlight" style="height:48px; margin-top:8px;" onclick="salvarProduto()">
+        <i class="fa-solid fa-floppy-disk" style="margin-right:8px;"></i> SALVAR PRODUTO
+      </button>
+    </div>
+
+    <!-- TELA 8: LISTA DE CLIENTES (lista_clientes.dart) -->
+    <div id="screen-clientes" class="screen-content">
+      <div id="clientes-list-container">
+        <!-- Itens inseridos dinamicamente -->
+      </div>
+      <button class="fab-btn" onclick="navTo('cadastro-cliente')">
+        <i class="fa-solid fa-user-plus"></i> NOVO CLIENTE
+      </button>
+    </div>
+
+    <!-- TELA 7: CADASTRO DE CLIENTE (cadastro_cliente.dart) -->
+    <div id="screen-cadastro-cliente" class="screen-content">
+      <h3 style="font-family:'Oswald'; color:var(--primary); font-size:18px; text-align:center; margin-bottom:4px;">NOVO CLIENTE</h3>
+      <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:18px;">Cadastro de fidelidade e encomendas</p>
+
+      <div class="form-group">
+        <label class="form-label">Nome Completo *</label>
+        <input type="text" id="cli-nome" class="form-input" placeholder="Ex: Maria dos Santos">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Telefone / WhatsApp *</label>
+        <input type="tel" id="cli-telefone" class="form-input" placeholder="Ex: (41) 99888-7766">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input type="email" id="cli-email" class="form-input" placeholder="Ex: maria@email.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Endereço / Bairro</label>
+        <input type="text" id="cli-endereco" class="form-input" placeholder="Ex: Rua das Flores, 120">
+      </div>
+
+      <button class="menu-button highlight" style="height:48px; margin-top:8px;" onclick="salvarCliente()">
+        <i class="fa-solid fa-floppy-disk" style="margin-right:8px;"></i> SALVAR CLIENTE
+      </button>
+    </div>
+
+    <!-- SnackBar Toast Notification -->
+    <div id="snackbar" class="snackbar">
+      <i id="snackbar-icon" class="fa-solid fa-circle-check"></i>
+      <span id="snackbar-text">Sucesso!</span>
+    </div>
+  </div>
+
+  <script>
+    // Banco de Dados em Memória (Espelho das Coleções do Cloud Firestore)
+    let produtosDB = [
+      { id: '1', nome: 'Capuccino Artesanal', preco: 8.00, categoria: 'Cafés', descricao: 'Com canela e chocolate belga.', data_criacao: new Date() },
+      { id: '2', nome: 'Bolo Caseiro de Cenoura', preco: 20.00, categoria: 'Bolos', descricao: 'Cobertura farta de brigadeiro cremoso.', data_criacao: new Date() },
+      { id: '3', nome: 'Pão Francês Quentinho', preco: 1.00, categoria: 'Pães', descricao: 'Receita tradicional crocante.', data_criacao: new Date() }
+    ];
+
+    let clientesDB = [
+      { id: '1', nome: 'Dona Ana Maria', telefone: '(41) 98765-4321', email: 'ana.maria@email.com', endereco: 'Rua Principal, 45 - Centro', data_cadastro: new Date() },
+      { id: '2', nome: 'Carlos Eduardo', telefone: '(41) 99123-9876', email: 'carlos.edu@email.com', endereco: 'Av. Paraná, 102 - Jardim', data_cadastro: new Date() }
+    ];
+
+    const screenTitles = {
+      'home': 'PADARIA HORA PÃES',
+      'vitrine': 'NOSSA VITRINE',
+      'equipe': 'EQUIPE',
+      'objetivos': 'OBJETIVOS',
+      'diagramas': 'DIAGRAMAS',
+      'produtos': 'CARDÁPIO DE PRODUTOS',
+      'cadastro-produto': 'CADASTRO DE PRODUTO',
+      'clientes': 'LISTA DE CLIENTES',
+      'cadastro-cliente': 'CADASTRO DE CLIENTE'
+    };
+
+    function navTo(screenId) {
+      document.querySelectorAll('.screen-content').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById('screen-' + screenId);
+      if (target) {
+        target.classList.add('active');
+        document.getElementById('app-title').innerText = screenTitles[screenId] || 'PADARIA HORA PÃES';
+        document.getElementById('btn-back').style.visibility = (screenId === 'home') ? 'hidden' : 'visible';
+      }
+
+      if (screenId === 'produtos') renderProdutos();
+      if (screenId === 'clientes') renderClientes();
+    }
+
+    function showSnackBar(msg, isError = false) {
+      const snack = document.getElementById('snackbar');
+      const text = document.getElementById('snackbar-text');
+      const icon = document.getElementById('snackbar-icon');
+      text.innerText = msg;
+
+      if (isError) {
+        snack.classList.add('error');
+        icon.className = 'fa-solid fa-triangle-exclamation';
+      } else {
+        snack.classList.remove('error');
+        icon.className = 'fa-solid fa-circle-check';
+      }
+
+      snack.classList.add('show');
+      setTimeout(() => snack.classList.remove('show'), 3000);
+    }
+
+    function renderProdutos() {
+      const container = document.getElementById('produtos-list-container');
+      if (produtosDB.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-bread-slice"></i>
+            <h4>Nenhum produto cadastrado ainda</h4>
+            <p>Clique em + abaixo para cadastrar.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Ordenado do mais recente para o mais antigo (requisito sugestão do PDF)
+      const sorted = [...produtosDB].reverse();
+      container.innerHTML = sorted.map(item => `
+        <div class="card-item">
+          <div class="card-header">
+            <div>
+              <div class="card-title">${item.nome}</div>
+              <span class="badge">${item.categoria}</span>
+            </div>
+            <div class="card-price">R$ ${Number(item.preco).toFixed(2).replace('.', ',')}</div>
+          </div>
+          ${item.descricao ? `<div class="card-desc">${item.descricao}</div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function salvarProduto() {
+      const nome = document.getElementById('prod-nome').value.trim();
+      const preco = parseFloat(document.getElementById('prod-preco').value);
+      const categoria = document.getElementById('prod-categoria').value.trim();
+      const descricao = document.getElementById('prod-descricao').value.trim();
+
+      // Validação de campos vazios (sugestão do PDF)
+      if (!nome || isNaN(preco) || !categoria) {
+        showSnackBar('Preencha os campos obrigatórios (Nome, Preço e Categoria)!', true);
+        return;
+      }
+
+      // Gravando o documento na coleção (Create Document)
+      produtosDB.push({
+        id: String(Date.now()),
+        nome,
+        preco,
+        categoria,
+        descricao,
+        data_criacao: new Date()
+      });
+
+      // Limpar campos após salvar (requisito do PDF)
+      document.getElementById('prod-nome').value = '';
+      document.getElementById('prod-preco').value = '';
+      document.getElementById('prod-categoria').value = '';
+      document.getElementById('prod-descricao').value = '';
+
+      // Mostrar mensagem de sucesso Show Snack Bar (requisito do PDF)
+      showSnackBar('Produto cadastrado com sucesso!');
+
+      // Retorna para a lista e o registro novo já aparece no topo (requisito do PDF)
+      setTimeout(() => navTo('produtos'), 800);
+    }
+
+    function renderClientes() {
+      const container = document.getElementById('clientes-list-container');
+      if (clientesDB.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-users"></i>
+            <h4>Nenhum cliente cadastrado ainda</h4>
+            <p>Clique em + abaixo para cadastrar.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const sorted = [...clientesDB].reverse();
+      container.innerHTML = sorted.map(item => `
+        <div class="card-item">
+          <div class="card-title" style="margin-bottom:6px;"><i class="fa-solid fa-circle-user" style="color:var(--accent); margin-right:6px;"></i>${item.nome}</div>
+          <div class="card-info-row"><i class="fa-solid fa-phone"></i><span>${item.telefone}</span></div>
+          ${item.email ? `<div class="card-info-row"><i class="fa-solid fa-envelope"></i><span>${item.email}</span></div>` : ''}
+          ${item.endereco ? `<div class="card-info-row"><i class="fa-solid fa-location-dot"></i><span>${item.endereco}</span></div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function salvarCliente() {
+      const nome = document.getElementById('cli-nome').value.trim();
+      const telefone = document.getElementById('cli-telefone').value.trim();
+      const email = document.getElementById('cli-email').value.trim();
+      const endereco = document.getElementById('cli-endereco').value.trim();
+
+      if (!nome || !telefone) {
+        showSnackBar('Preencha os campos obrigatórios (Nome e Telefone)!', true);
+        return;
+      }
+
+      // Gravando o documento na coleção clientes
+      clientesDB.push({
+        id: String(Date.now()),
+        nome,
+        telefone,
+        email,
+        endereco,
+        data_cadastro: new Date()
+      });
+
+      // Limpar campos
+      document.getElementById('cli-nome').value = '';
+      document.getElementById('cli-telefone').value = '';
+      document.getElementById('cli-email').value = '';
+      document.getElementById('cli-endereco').value = '';
+
+      // SnackBar de Sucesso
+      showSnackBar('Cliente cadastrado com sucesso!');
+
+      // Retorna à lista
+      setTimeout(() => navTo('clientes'), 800);
+    }
+
+    // Inicialização
+    renderProdutos();
+    renderClientes();
+  </script>
+</body>
+</html>
